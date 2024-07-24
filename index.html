@@ -4,20 +4,30 @@
 <head>
     <title>Simple API</title>
     <script>
+        function handleRequest(req, res) {
+            if (req.method === 'GET' && req.url === '/api/data') {
+                res.writeHead(200, {'Content-Type': 'application/json'});
+                res.end(JSON.stringify({message: 'Hello from GitHub Pages!'}));
+            } else {
+                res.writeHead(404, {'Content-Type': 'text/plain'});
+                res.end('Not Found');
+            }
+        }
+
         window.addEventListener('load', () => {
-            fetch('/api/data.json')
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById('response').textContent = JSON.stringify(data);
-                })
-                .catch(error => {
-                    document.getElementById('response').textContent = 'Error: ' + error;
-                });
+            const request = new XMLHttpRequest();
+            request.open('GET', '/api/data', true);
+            request.onload = function () {
+                if (this.status >= 200 && this.status < 400) {
+                    document.getElementById('response').textContent = this.response;
+                }
+            };
+            request.send();
         });
     </script>
 </head>
 <body>
     <h1>Simple API</h1>
-    <pre id="response">Loading......</pre>
+    <pre id="response">Loading...</pre>
 </body>
 </html>
